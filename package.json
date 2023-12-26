@@ -1,0 +1,8 @@
+{
+    "name": "spacesheep",
+    "version": "1.0.0",
+    "type": "module",
+    "devDependencies": {
+        "eslint": "^8.22.0"
+    }
+}

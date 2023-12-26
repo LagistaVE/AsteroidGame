@@ -1,0 +1,43 @@
+-- Date: 14.11.2023
+First thoughts on assignment:
+What do i need to do:
+    - Build an in game logic in a js file
+        - that has to include all the objects that create the asteroid game
+            - spaceship, asteroids, saucers (ships that attack), point system, life counter (maybe not really class needed at all)
+        - a game loop that describes how the game should be played
+    - create a way to render in a classic way and also modern
+        - start with modern --> simplification in a classic mode through a switch triggered
+    - create a hud
+        - during game: display amount of lifes, highscores
+        - before game: start button, switch to change rendering modes
+        - game over state: back to main menu button, play again button, maybe even log highscore ever achieved
+
+
+-- Date: 15.11.2023
+First steps made:
+- create variables and objects that outline the game.
+- try to figure out what functions can be written so tha the main method that runs the game can be simplified (divide and conquer)
+- creation and movement defined of the spaceship and the other objects to a certain extend
+
+
+-- Date 16.11.2023
+defined spaceship and asteroids with movement and also other behaviours
+
+--Date: 29.11.2023
+worked on the saucer and defined movement, spawning and shooting behaviour
+
+--Date 05.12.2023
+- fix fetching of models and do that over just one fetch method that can be called for all json files!
+- start the rendering so i can test my already written methods
+- fixed the movement of the spaceship
+- done adaptation in new folder
+
+--Date 10.12.2023
+- in new file fixed spaceship movement and done wrapping
+- started writing for asteroids spawning and fetching of the models
+
+-- Date 19.12.2023
+- fixed rendering in other environment with scenegraphes
+- made ship rotate mathematically but not yet visually --> movement works but not visually
+- loaded in first asteroid stationary in the center --> figure out how to place them randomly --> create an asteroid class so we can bind the 
+    coordinates to the visual object --> then make it move randomly --> this.transform[12] and [13] in both the movements
