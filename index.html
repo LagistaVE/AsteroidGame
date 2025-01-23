@@ -1,11 +1,129 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CPS3231 L04 - Using AJAX fetch() to download geometry</title>
+    <title>Asteroid Game Assignment</title>
     <link rel="shortcut icon" type="image/png" href="../images/uomfavicon.png"/>
     <style type="text/css">
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
         canvas {
             border: 5px solid rgb(0, 0, 0);
+            background-image: url('pictures/space_background.jpeg');
+            background-size: cover;
+        }
+
+        .button {
+            position: absolute;
+            left: 400px;
+            transform: translateX(-50%);
+            color: #ffffff;
+            background-color: black;
+            border-width: 0;
+            padding: 10px;
+        }
+
+        .submit-initials-button {
+          top: 80%;
+          left: 70%;
+        }
+
+        .end-button {
+          top: 80%;  
+          left: 30%;
+        }
+
+        .start-button.other-class {
+            top: 100px;
+          
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Additional styles for game-related elements */
+        .game-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #FFF;
+            font-size: 18px;
+            text-align: left;
+            z-index: 1;
+        }
+
+        .instructions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FFF;
+            font-size: 24px;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #FFF;
+            font-size: 18px;
+            text-align: left;
+            z-index: 1;
+        }
+
+        .lives {
+          position: absolute;
+          top: 90%;
+          left: 70%;
+          color: #FFF;
+          font-size: 18px;
+          z-index: 1;
+        }
+
+        .score {
+          position: absolute;
+          top: 92%;
+          left: 70%;
+          color: #FFF;
+          font-size: 18px;
+          z-index: 1;
+        }
+        .waveNr {
+          position: absolute;
+          top: 92%;
+          left: 25%;
+          color: white;
+          font-size: 18px;
+          z-index: 1;
+        
+        }
+
+        .gameOver-container {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          text-align: center;
+        }
+
+      .gameOver-container img {
+          display: block; /* Ensure the image is centered properly */
+          margin: 0 auto 10px; /* Center the image horizontally */
+          background-color: transparent;
+        }
+
+      .initials-input {
+          width: 200px;
+          display: block; /*Ensure the input field takes full width */
+          margin: 0 auto; /* Center the input field horizontally */
+          margin-top: 10px; /* Add some space between the image and input field */
         }
 
     </style>
@@ -39,19 +157,19 @@
 
       uniform LightVertexInfo LightVertex[4];
 
-     void main(void) 
+     void main(void)
       {
         vec4 p = vec4(position, 1.0);
         mat4 vm = viewMatrix * modelMatrix;
         mat4 pvm = projectionMatrix * vm;
 
         // Light Type : DIRECTIONAL
-        if (LightVertex[0].type == 0) 
+        if (LightVertex[0].type == 0)
         {
           vLight = -normalize((viewMatrix * vec4(LightVertex[0].direction, 0)).xyz);
-        } 
+        }
         // Light Type : POINT && SPOT
-        else if (LightVertex[0].type == 1 || LightVertex[0].type == 2) 
+        else if (LightVertex[0].type == 1 || LightVertex[0].type == 2)
         {
           vec4 mp = modelMatrix * p;
           vec4 lt = vec4(LightVertex[0].position, 1.0) - mp;
@@ -65,7 +183,7 @@
 
         // Eye vector
         vEye = -normalize(vm * p).xyz;
-        
+
         // Texture coordinates
         vTexCoords = texcoords;
 
@@ -114,7 +232,7 @@
       float invPi = 0.31830988618;
       float inv2Pi = 0.15915494309;
 
-		  void main(void) 
+		  void main(void)
 		  {
         vec3 vnLight = normalize(vLight);
         float vLightDistance = length(vLightWorld);
@@ -130,14 +248,14 @@
           }
         }
 
-        if (LightFragment[0].type == 2) 
+        if (LightFragment[0].type == 2)
         {
           float coneAngle = dot(vnLight, -normalize(vLightAxis));
           coneAngle = max(LightFragment[0].beta, min(LightFragment[0].alpha, coneAngle));
           coneAngle = (coneAngle - LightFragment[0].beta) / (LightFragment[0].alpha - LightFragment[0].beta);
           attenuation *= coneAngle;
         }
-      
+
         // Compute reflection vector
         vec3 vReflect = reflect(vnLight, vNormal);
 
@@ -146,18 +264,16 @@
         vec3 diffuse = LightFragment[0].diffuse * uDiffuse;
         vec3 specular = LightFragment[0].specular * uSpecular;
         vec3 rho = texture2D(uTexture_0, vTexCoords.xy).xyz;
-        
+        float rho_alpha = texture2D(uTexture_0, vTexCoords.xy).w;
+
         // Compute phong specular and lambert diffuse
         float s = pow(max(dot(vReflect, -vEye), 0.0), uShininess) * (uShininess + 2.0) * inv2Pi;
         float d = max(dot(vNormal, vnLight), 0.0) * invPi;
 
-        // KB - Color blending has been changed from modulative to additive 
+        // KB - Color blending has been changed from modulative to additive
         //    - Result is saturated to prevent values outside colour valid range
         //gl_FragColor = vec4(((ambient + d * diffuse + s * specular) * rho * vColor) * attenuation, 1.0);
-        gl_FragColor = vec4(
-          clamp(vColor + ((ambient + diffuse * d + specular * s) * rho * attenuation), vec3(0,0,0), vec3(1,1,1)),
-          1.0
-        );
+        gl_FragColor = vec4(clamp(vColor + ((ambient + diffuse * d + specular * s) * rho * attenuation), vec3(0,0,0), vec3(1,1,1)), rho_alpha);
       }
     </script>
 
@@ -168,15 +284,47 @@
     <script type="module" src="matrix.js"></script>
     <script type="module" src="light.js"></script>
     <script type="module" src="material.js"></script>
-    <script type="module" src="textures.js"></script>
     <script type="module" src="model.js"></script>
     <script type="module" src="scene.js"></script>
- 
+    <script type="module" src="GameStateModes/AttractMode.js"></script>
+    <script type="module" src="GameStateModes/GameplayMode.js"></script>
+
   </head>
 
   <body style="margin:0">
-    <canvas id="webgl-canvas" width="800" height="800">
-      If you can see this ... your browser does not support the HTML5 canvas element.
-    </canvas>
+    <div class="container">
+        <button class="start-button other-class button" id="start-button">Start game</button>
+        <!-- <button class="button end-button">End game</button> -->
+        <canvas id="webgl-canvas" width="800" height="800">
+          If you can see this ... your browser does not support the HTML5 canvas element.
+        </canvas>
+   <!-- Game information elements -->
+        <div class="game-info">
+            <div class="game-title"></div>
+            <div class="high-scores"></div>
+        </div>
+
+        <!-- Instructions during Attract Mode -->
+        <div class="instructions"></div>
+
+        <!-- Controls information -->
+        <div class="controls"></div>
+    </div>
+
+  
+    <div class="gameplay-container" >
+      <div class="lives">Lives: 0</div>
+      <div class="score">Score: 0</div>
+      <div class="waveNr"> Wave 0</div>
+    </div>
+
+<!-- Game over content -->
+    <div class="gameOver-container">
+      <img src="pictures/gameOver.png" alt="Game Over">
+      <input type="text" id="initials-input" placeholder="Enter your initials">
+      <button class="submit-initials-button other-class button" id="submit-initials-button">Submit</button>
+     <button class="end-button other-class button" id="return-button">Main Menu</button>
+    </div>
+
   </body>
 </html>

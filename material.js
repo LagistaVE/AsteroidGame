@@ -39,6 +39,7 @@ Material.prototype.setAlbedo = function (gl, albedo)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage)
+    this.loaded = true
 }
 
 Material.prototype.setAmbient = function (ambientContribution) {
@@ -65,6 +66,20 @@ Material.prototype.bind = function (gl, shaderProgram)
     this.shaderIndices.specular = gl.getUniformLocation(shaderProgram, 'uSpecular')
     this.shaderIndices.shininess = gl.getUniformLocation(shaderProgram, 'uShininess')
     this.shaderIndices.samplerIndex = gl.getUniformLocation( shaderProgram, 'uTexture_0' )
+}
+
+Material.prototype.scaleTextureCoordinates = function (sx, sy) {
+    // Create a copy of the texture coordinates
+    const textureCoordinates = this.textureCoordinates.slice()
+  
+    // Scale the texture coordinates
+    for (let i = 0; i < textureCoordinates.length; i += 2) {
+        textureCoordinates[i] *= sx
+        textureCoordinates[i + 1] *= sy
+    }
+  
+    // Set the scaled texture coordinates
+    this.textureCoordinates = textureCoordinates
 }
 
 Material.prototype.use = function (gl)

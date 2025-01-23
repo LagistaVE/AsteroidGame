@@ -1,0 +1,162 @@
+-- Date: 14.11.2023
+First thoughts on assignment:
+What do i need to do:
+    - Build an in game logic in a js file
+        - that has to include all the objects that create the asteroid game
+            - spaceship, asteroids, saucers (ships that attack), point system, life counter (maybe not really class needed at all)
+        - a game loop that describes how the game should be played
+    - create a way to render in a classic way and also modern
+        - start with modern --> simplification in a classic mode through a switch triggered
+    - create a hud
+        - during game: display amount of lifes, highscores
+        - before game: start button, switch to change rendering modes
+        - game over state: back to main menu button, play again button, maybe even log highscore ever achieved
+
+
+-- Date: 15.11.2023
+First steps made:
+- create variables and objects that outline the game.
+- try to figure out what functions can be written so tha the main method that runs the game can be simplified (divide and conquer)
+- creation and movement defined of the spaceship and the other objects to a certain extend
+
+
+-- Date 16.11.2023
+defined spaceship and asteroids with movement and also other behaviours
+
+--Date: 29.11.2023
+worked on the saucer and defined movement, spawning and shooting behaviour
+
+--Date 05.12.2023
+- fix fetching of models and do that over just one fetch method that can be called for all json files!
+- start the rendering so i can test my already written methods
+- fixed the movement of the spaceship
+- done adaptation in new folder
+
+--Date 10.12.2023
+- in new file fixed spaceship movement and done wrapping
+- started writing for asteroids spawning and fetching of the models
+
+-- Date 19.12.2023
+- fixed rendering in other environment with scenegraphes
+- made ship rotate mathematically but not yet visually --> movement works but not visually
+- loaded in first asteroid stationary in the center --> figure out how to place them randomly --> create an asteroid class so we can bind the 
+    coordinates to the visual object --> then make it move randomly --> this.transform[12] and [13] in both the movements
+
+-- Date 26.12.2023
+- made spaceship rotate and move appropriately
+- started the rendering and movement process of the asteroids --> does not work yet
+
+-- Date 28.12.2023
+- tried to make the asteroids actually work --> still not done
+- tried to get the background to be starry --> want to just add the space_background file over the colour buffer
+
+-- Date 29.12.2023
+- added saucer file and functionalities
+- movement does not work correctly yet --> moves left right way to quick that it actually reaches the end of the screen 
+     --> set timeout to delay the iterations
+     
+- saucer always placed in the middle --> not correct as i want it to be randomly placed on the x and y axis --> x axis is randomly but the y is not
+
+-- Date 30.12.2023
+- fix movement of saucer and placement --> done runs on x axis consistently until hitting a screenlimit and then inverts direction
+    - through this.transform[13] in animationCallback placed it randomly on y axis as well
+
+- get one asteroid to move freely at least --> moves as intended right now --> fix it so it actually spawns at a random location on the screen within
+    screenlimits
+
+- try to figure out how to render more than 1 object of an array --> asteroids, saucers, lasers
+
+-- Date 04.01.2024
+- figure out how to load images and assigns as textures
+
+-- Date 08.01.2024
+- implement life system for player
+- assign texture to spaceship
+- implement hit detection
+
+-- Date 09.01.2024
+- implement textures --> spaceship is the only thing not wrapping on the object right
+
+-- Date 10.01.2024
+- fix the asteroids to spawn randomly and not on one spot! --> they do tihi
+- make the asteroids move properly --> they do tihi
+- create background plane for starry background --> found picture i want to use
+
+--Date 12.01.2024
+- place background
+- come up with idea for hit detection that might work and test it
+
+-- Date 14.01.2024
+- make spaceship reset location after being hit
+- fix spaceship shooting
+- come up with idea how asteroids can split up and spawn 2 of the smaller size if being hit
+
+--Date 15.01.2024
+- spaceship cooldown on hyperdrive countdown function
+- asteroid splitting definition
+- create second kind of saucers
+
+--Date 16.01.2024
+- fix the asteroid spawning so its in the scene graph
+- do the same with the saucers
+
+-- Date 20.01.2024
+- attempt to fix saucer spawning for the 10 second requirement
+
+-- Date 23.01.2024
+- fix saucers speed
+- fix laser shooting
+- try getting an overview to get the main masks --> html start screen etc.
+
+-- Date 24.01.2024
+- integrate clear node distinctions so they can be removed --> system needs to know which one to remove
+    --> add a + i to each node creation in a node for loop
+
+-- Date 26.01.2024
+- write method to remove nodes from the scene graph --> done just implement --> does not work properly
+- improve collision detection --> simplify so i can remove the nodes easier --> improved
+- integrate a highscore system --> after shooting the asteroids and saucers --> highscore is set at 0 but couldnt fix the collision stuff so cant be increased yet 
+
+-- Date 29.01.2024
+- implement attract mode
+
+-- Date 30.01.2024
+- fix lasers not stopping at end of screen
+- fix attract mode into gameplay Mode switch --> switch works but attract mode isnt showing properly
+
+-- Date 01.02.2024
+- implement the hit detection and make the asteroids and saucers pop out of the scene graph
+
+-- 04.02.2024
+- fix the despawn of the asteroids and saucers --> fixed
+- implement waves so the game escalates til failure --> fix while loop --> so it spawns mathematically now but not visually.. work on it after exam
+
+-- 06.02.2024
+- fix the wave spawning --> fixed it through making the asteroid spawning a method and calling it in the render loop!!!!! (super glad)
+
+-- 09.02.2024
+- make saucers shoot lasers at random locations --> not done at all
+
+-- 11.02.2024:
+- fixed attract mode and gameplay mode transition --> just implement game over mode and should work now! 
+    --> UI transition from game over into attract to do
+- implement the only small saucers after 10k points! --> done
+
+-- 12.02.2024:
+- implement game over mode --> finish that tmrw
+- fix the movement problems of the asteroids when they are destroyed --> done
+- make funciton that changes the indices slightly of the geometry of the asteroids to make them look distinct --> distinct between sizes!
+- implement extra life after 10k points     --> done!
+
+-- 13.02.2024:
+- finish game Over mode! --> do tmrw
+- make saucers shoot            --> shoots at random location but only one --> maybe fix the directed one
+- make the asteroids split      --> in the asteroid hit detection in combination with the lasers!
+- start writing report
+
+-- 14.02.2024
+- finish game over Mode --> done
+- write report
+
+-- 115.02.2024
+- finish report and hand in assignment

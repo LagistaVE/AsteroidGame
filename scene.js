@@ -2,10 +2,10 @@ import { matrixHelper } from './matrix.js'
 //--------------------------------------------------------------------------------------------------------//
 //  Scene Element
 //--------------------------------------------------------------------------------------------------------//
-export function Node ()
+export function Node (_name)
 {
     this.type = 0
-    this.name = 'untitled'
+    this.name = _name
     this.parent = null
     this.children = []
     this.nodeObject = null
@@ -35,14 +35,6 @@ Node.prototype.draw = function (scene, parentTransform)
             this.nodeObject.draw(scene, compositeTransform)
         }
     }
-
-    // else if (this.type == Node.NODE_TYPE.LIGHT)
-    // {
-    // 	// Transform light before setting it
-    // 	if (this.nodeObject) {
-    // 		this.nodeObject.useTransformed(scene.gl, compositeTransform);
-    // 	}
-    // }
 	
     let _type = this.type
     let _nodeObject = this.nodeObject
@@ -70,6 +62,16 @@ Node.prototype.animate = function (deltaTime)
     })
 }
 
+Node.prototype.print = function (deltaTime)
+{
+    console.log('Type: ' + this.type + ' parent: '  + this.parent + ' name: ' + this.name + ' children length: ' + this.children.length)
+
+    this.children.forEach(function (childNode) {
+        console.log('Child node :: ' + childNode.name)
+        childNode.print(deltaTime)
+    })
+}
+
 //--------------------------------------------------------------------------------------------------------//
 //  Scene Graph
 //--------------------------------------------------------------------------------------------------------//
@@ -77,7 +79,7 @@ export function Scene ()
 {
     this.gl = null
     this.canvas = null
-    this.root = new Node()
+    this.root = new Node('ROOT')
 
     this.indexColour = 0
     this.indexNormal = 0
@@ -169,11 +171,13 @@ Scene.prototype.initialiseMatrices = function ()
 
 Scene.prototype.initialiseFlags = function ()
 {
-    this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
+    this.gl.clearColor(0.1, 0.2, 0.8, 1.0)
     this.gl.viewport(0.0, 0.0, this.canvas.width, this.canvas.height)
 
-    this.gl.enable(this.gl.DEPTH_TEST)
-    this.gl.depthFunc(this.gl.LESS)
+    this.gl.disable(this.gl.DEPTH_TEST)
+    // this.gl.depthFunc(this.gl.LESS)
+    this.gl.enable(this.gl.BLEND)  //Enable blending using src_alpha channel in texture image
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
 }
 
 Scene.prototype.initialise = function (gl, canvas)
@@ -239,6 +243,7 @@ Scene.prototype.setModel = function (model)
 Scene.prototype.findNode = function (nodeName)
 {
     let stack = [this.root]
+    console.log('Searching for ' + nodeName)
 
     while (stack.length != 0) {
         let node = stack.pop()
@@ -255,13 +260,38 @@ Scene.prototype.findNode = function (nodeName)
 Scene.prototype.addNode = function (parent, nodeObject, nodeName, nodeType)
 {
     let node = new Node()
+
+    node.parent = parent
     node.name = nodeName
     node.type = nodeType
     node.nodeObject = nodeObject
 
     parent.children[parent.children.length] = node
 
+    console.log('Added new node ' + node.name + ' to SceneGraph at parent ' + node.parent.name + ' Parent children count = ' + node.parent.children.length)
     return node
+}
+
+Scene.prototype.removeNode = function (nodeName) {
+    console.log('Removing node ' + nodeName)
+    let nodeToRemove = this.findNode(nodeName)
+
+    if (!nodeToRemove) {
+        console.error(`Node with name ${nodeName} not found in scene graph`)
+        return
+    }
+
+    // Remove node from parent's children list
+    if (nodeToRemove.parent) {
+        // use console logs to track the changes regarding the scene graph
+        console.log('Index of node to remove : ' + nodeToRemove.parent.children.indexOf(nodeToRemove))
+        console.log('Parent Node Name = ' + nodeToRemove.parent.name + ' (BEFORE) Children Count = ' + nodeToRemove.parent.children.length)
+        nodeToRemove.parent.children.splice(nodeToRemove.parent.children.indexOf(nodeToRemove), 1)
+        console.log('Parent Node Name = ' + nodeToRemove.parent.name + ' (AFTER) Children Count = ' + nodeToRemove.parent.children.length)
+    } else { console.log('NO PARENT NODE') }
+
+    // Delete node reference - this is probably enough for the garbage collector to clean up
+    nodeToRemove = null
 }
 
 //--------------------------------------------------------------------------------------------------------//
@@ -290,4 +320,8 @@ Scene.prototype.animate = function ()
 
 Scene.prototype.draw = function () {
     this.root.draw(this, matrixHelper.matrix4.identity)
+}
+
+Scene.prototype.print = function () {
+    this.root.print(0)
 }

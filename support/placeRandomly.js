@@ -1,21 +1,18 @@
 import { horizontalScreenLimit, verticalScreenLimit } from './screenlimit.js'
 
+//this function places an object at a random location within screen limits!
 export const placeRandomly = function (object) {
-    const randomNr = Math.random()
-    const randomNr2 = Math.random()
-    if (randomNr > 0.5 && randomNr2 > 0.5) {
-        object.x = Math.random() * horizontalScreenLimit * -1
-        object.y = Math.random() * verticalScreenLimit * -1
-    } else if (randomNr < 0.5 && randomNr2 > 0.5) {
-        object.x = Math.random() * horizontalScreenLimit * -1
-        object.y = Math.random() * verticalScreenLimit
-    } else if (randomNr > 0.5 && randomNr2 < 0.5) {
-        object.x = Math.random() * horizontalScreenLimit
-        object.y = Math.random() * verticalScreenLimit * -1
-    } else {
-        object.x = Math.random() * horizontalScreenLimit
-        object.y = Math.random() * verticalScreenLimit
-    }
+    const horizontalMax = horizontalScreenLimit
+    const horizontalMin = horizontalScreenLimit * -1
+    // define random horizontal number within screen limits
+    const randomNrHorizontal = Math.floor(Math.random() * (horizontalMax - horizontalMin + 1) + horizontalMin)
 
+    const verticalMax = verticalScreenLimit
+    const verticalMin = verticalScreenLimit * -1
+    // define random vertical number within screen limits
+    const randomNrVertical = Math.floor(Math.random() * (verticalMax - verticalMin + 1) + verticalMin)
+
+    object.x = randomNrHorizontal   //assign random nr. to the x coordinate
+    object.y = randomNrVertical     //assign random nr. to the y coordinate
     return object
 }

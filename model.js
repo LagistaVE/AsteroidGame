@@ -26,7 +26,7 @@ Model.prototype.draw = function (scene, transform)
 {
     if (this.indexBuffer == null || this.vertexBuffer == null)
     {
-        alert('Cannot bind index or vertex buffer for model ' + this.name + '!')
+        // alert('Cannot bind index or vertex buffer for model ' + this.name + '!')
         return
     }
 
@@ -35,7 +35,9 @@ Model.prototype.draw = function (scene, transform)
         alert(this.name + ' has no material assigned!')
         return
     }
-
+    if (!this.material.loaded) {
+        return
+    }
     scene.setModel(transform)
     scene.updateModel()
     scene.bindModelData(this.vertexBuffer, this.indexBuffer)
